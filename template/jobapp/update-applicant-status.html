@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="text-white font-weight-bold">Update Applicant Status</h1>
+                <div class="custom-breadcrumbs">
+                    <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+                    <a href="{% url 'jobapp:dashboard' %}">Dashboard</a> <span class="mx-2 slash">/</span>
+                    <span class="text-white"><strong>Update Status</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="site-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <div class="card p-5">
+                    <h3 class="mb-4">{{ applicant.user.get_full_name }}</h3>
+                    <p><strong>Job Applied For:</strong> {{ applicant.job.title }}</p>
+                    <p><strong>Current Status:</strong> <span class="badge {% if applicant.status == 'pending' %}badge-warning{% elif applicant.status == 'shortlisted' %}badge-success{% else %}badge-danger{% endif %}">{{ applicant.get_status_display }}</span></p>
+                    
+                    <form method="POST" class="mt-4">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.status.id_for_label }}">Update Status:</label>
+                            {{ form.status }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Status</button>
+                        <a href="{% url 'jobapp:applicants' applicant.job.id %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

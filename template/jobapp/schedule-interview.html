@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="text-white font-weight-bold">Schedule Interview</h1>
+                <div class="custom-breadcrumbs">
+                    <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+                    <a href="{% url 'jobapp:dashboard' %}">Dashboard</a> <span class="mx-2 slash">/</span>
+                    <span class="text-white"><strong>Schedule Interview</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="site-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card p-5">
+                    <h3 class="mb-4">Schedule Interview</h3>
+                    <p><strong>Candidate:</strong> {{ applicant.user.get_full_name }}</p>
+                    <p><strong>Job Position:</strong> {{ applicant.job.title }}</p>
+                    <p><strong>Email:</strong> {{ applicant.user.email }}</p>
+                    
+                    <form method="POST" class="mt-4">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.scheduled_date.id_for_label }}">Interview Date & Time:</label>
+                            {{ form.scheduled_date }}
+                            {% if form.scheduled_date.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.scheduled_date.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.meeting_link.id_for_label }}">Meeting Link:</label>
+                            {{ form.meeting_link }}
+                            {% if form.meeting_link.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.meeting_link.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.notes.id_for_label }}">Interview Notes:</label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.notes.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Schedule Interview</button>
+                        <a href="{% url 'jobapp:applicants' applicant.job.id %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

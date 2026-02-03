@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="home-section section-hero overlay bg-image"
+  style="background-image: url('{% static 'images/hero_1.jpg' %}'); background-size: cover; background-position: center; min-height: 600px;" id="home-section">
+
+  <div class="container h-100">
+    <div class="row align-items-center justify-content-center h-100">
+      <div class="col-md-12">
+        <div class="mb-5 text-center">
+          <h1 class="text-white font-weight-bold" style="font-size: 3.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Find Your Dream Job Today</h1>
+          <p class="text-white lead" style="font-size: 1.3rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">Connect with top employers and advance your career</p>
+        </div>
+        <form method="GET" action="{% url 'jobapp:search_result' %}" class="search-jobs-form">
+          {% include 'jobapp/search.html' %}
+        </form>
+      </div>
+    </div>
+  </div>
+  <a href="#next" class="scroll-button smoothscroll">
+    <span class="icon-keyboard_arrow_down"></span>
+  </a>
+
+</section>
+
+<!-- STATS SECTION -->
+<section class="py-5 bg-light" id="next">
+  <div class="container">
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-8 text-center">
+        <h2 class="section-title mb-2">Why Choose DJobPortal?</h2>
+        <p class="lead text-muted">Join thousands of job seekers and employers on our platform</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card text-center shadow-sm h-100 border-0">
+          <div class="card-body">
+            <div class="mb-3">
+              <i class="fa fa-users fa-3x text-primary"></i>
+            </div>
+            <h5 class="card-title">{{ total_candidates }}+ Candidates</h5>
+            <p class="card-text text-muted">Active job seekers ready to find their next opportunity</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card text-center shadow-sm h-100 border-0">
+          <div class="card-body">
+            <div class="mb-3">
+              <i class="fa fa-briefcase fa-3x text-success"></i>
+            </div>
+            <h5 class="card-title">{{ total_jobs }}+ Jobs Posted</h5>
+            <p class="card-text text-muted">Diverse job opportunities across multiple industries</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card text-center shadow-sm h-100 border-0">
+          <div class="card-body">
+            <div class="mb-3">
+              <i class="fa fa-check-circle fa-3x text-info"></i>
+            </div>
+            <h5 class="card-title">{{ total_completed_jobs }}+ Jobs Filled</h5>
+            <p class="card-text text-muted">Successful placements and career matches</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card text-center shadow-sm h-100 border-0">
+          <div class="card-body">
+            <div class="mb-3">
+              <i class="fa fa-building fa-3x text-warning"></i>
+            </div>
+            <h5 class="card-title">{{ total_companies }}+ Companies</h5>
+            <p class="card-text text-muted">Top employers hiring on our platform</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED JOBS SECTION -->
+<section id="ajax_listing_paginattion" class="site-section">
+  <div class="container">
+    {% if page_obj %}
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-8 text-center">
+        <h2 class="section-title mb-2">Featured Jobs</h2>
+        <p class="lead text-muted">Browse our latest job openings</p>
+      </div>
+    </div>
+
+    <div id="job" class="row">
+      {% for job in page_obj %}
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-sm h-100 border-0 job-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h5 class="card-title"><a href="{% url 'jobapp:single-job' job.id %}" class="text-dark">{{ job.title }}</a></h5>
+                <p class="card-text text-muted mb-2"><strong>{{ job.company_name }}</strong></p>
+              </div>
+              <div>
+                {% if job.job_type == '1' %}
+                  <span class="badge badge-success">Full Time</span>
+                {% elif job.job_type == '2'%}
+                  <span class="badge badge-danger">Part Time</span>
+                {% else %}
+                  <span class="badge badge-info">Internship</span>
+                {% endif %}
+              </div>
+            </div>
+            
+            <p class="card-text text-muted small">{{ job.description | safe | truncatechars:100 }}</p>
+            
+            <div class="mb-3">
+              <span class="badge badge-light"><i class="fa fa-map-marker"></i> {{ job.location }}</span>
+              {% if job.salary %}
+                <span class="badge badge-light"><i class="fa fa-money"></i> {{ job.salary }}</span>
+              {% endif %}
+            </div>
+
+            {% if user.is_authenticated and user.role == 'employee' %}
+              {% if job.applicant_set.filter|length > 0 %}
+                {% for applicant in job.applicant_set.all %}
+                  {% if applicant.user == user %}
+                    <span class="badge badge-success"><i class="fa fa-check"></i> Applied</span>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endif %}
+
+            <div class="mt-3">
+              <a href="{% url 'jobapp:single-job' job.id %}" class="btn btn-primary btn-sm btn-block">View Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-12 text-center">
+        {% include 'jobapp/paginator.html' %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+<!-- CTA SECTION -->
+<section class="py-5 bg-primary text-white">
+  <div class="container">
+    {% if request.user.role == "employer" %}
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h2 class="text-white mb-2">Ready to Hire?</h2>
+        <p class="lead mb-0">Post your job opening and find the perfect candidate for your team</p>
+      </div>
+      <div class="col-md-4 text-right">
+        <a href="{% url 'jobapp:create-job' %}" class="btn btn-warning btn-lg">Post a Job</a>
+      </div>
+    </div>
+    {% elif request.user.role == "employee" %}
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h2 class="text-white mb-2">Explore More Jobs</h2>
+        <p class="lead mb-0">Browse all available positions and find your next opportunity</p>
+      </div>
+      <div class="col-md-4 text-right">
+        <a href="{% url 'jobapp:job-list' %}" class="btn btn-warning btn-lg">Browse Jobs</a>
+      </div>
+    </div>
+    {% else %}
+    <div class="row align-items-center">
+      <div class="col-md-8">
+        <h2 class="text-white mb-2">Start Your Job Search</h2>
+        <p class="lead mb-0">Join thousands of job seekers and find your dream job today</p>
+      </div>
+      <div class="col-md-4 text-right">
+        <a href="{% url 'account:employee-registration' %}" class="btn btn-warning btn-lg">Get Started</a>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5 justify-content-center">
+      <div class="col-md-8 text-center">
+        <h2 class="section-title mb-2">How It Works</h2>
+        <p class="lead text-muted">Simple steps to find your perfect job or hire the right candidate</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="text-center">
+          <div class="mb-3">
+            <i class="fa fa-search fa-3x text-primary"></i>
+          </div>
+          <h5>Search & Browse</h5>
+          <p class="text-muted">Explore thousands of job listings tailored to your skills and interests</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="text-center">
+          <div class="mb-3">
+            <i class="fa fa-file-upload fa-3x text-success"></i>
+          </div>
+          <h5>Apply with Resume</h5>
+          <p class="text-muted">Submit your application with your resume and get noticed by employers</p>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="text-center">
+          <div class="mb-3">
+            <i class="fa fa-video-camera fa-3x text-info"></i>
+          </div>
+          <h5>Interview & Hire</h5>
+          <p class="text-muted">Schedule interviews and connect with candidates through our platform</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+// Add any custom scripts here
+</script>
+{% endblock %}

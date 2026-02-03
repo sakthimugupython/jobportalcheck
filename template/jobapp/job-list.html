@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+<!-- HOME -->
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');"
+  id="home-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7">
+        <h1 class="text-white font-weight-bold">Jobs</h1>
+        <div class="custom-breadcrumbs">
+          <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+          <span class="text-white"><strong>Jobs</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="site-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        {% if page_obj %}
+          {% for job in page_obj %}
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-8">
+                  <h3 class="card-title"><a href="{% url 'jobapp:single-job' job.id %}">{{ job.title }}</a></h3>
+                  <p class="text-muted"><strong>{{ job.company_name }}</strong></p>
+                  <p class="card-text">{{ job.description | safe | truncatechars:300 }}</p>
+                  <div class="mb-3">
+                    <span class="badge badge-secondary">{{ job.location }}</span>
+                    {% if job.job_type == '1' %}
+                      <span class="badge badge-primary">Full Time</span>
+                    {% elif job.job_type == '2' %}
+                      <span class="badge badge-danger">Part Time</span>
+                    {% else %}
+                      <span class="badge badge-info">Internship</span>
+                    {% endif %}
+                    {% if job.salary %}
+                      <span class="badge badge-success">{{ job.salary }}</span>
+                    {% endif %}
+                    {% if user.is_authenticated and user.role == 'employee' %}
+                      {% if job.applicant_set.filter|length > 0 %}
+                        {% for applicant in job.applicant_set.all %}
+                          {% if applicant.user == user %}
+                            <span class="badge badge-success">Applied</span>
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                  <p class="text-muted"><small>Posted: {{ job.timestamp | date:'M d, Y' }} | Deadline: {{ job.last_date | date:'M d, Y' }}</small></p>
+                </div>
+                <div class="col-md-4 text-right">
+                  <a href="{% url 'jobapp:single-job' job.id %}" class="btn btn-primary">View Details</a>
+                  {% if user.is_authenticated and user.role == 'employee' %}
+                    {% if job.applicant_set.filter|length > 0 %}
+                      {% for applicant in job.applicant_set.all %}
+                        {% if applicant.user == user %}
+                          <button class="btn btn-success" disabled>Already Applied</button>
+                        {% else %}
+                          <a href="{% url 'jobapp:apply-job' job.id %}" class="btn btn-success">Apply Now</a>
+                        {% endif %}
+                      {% endfor %}
+                    {% else %}
+                      <a href="{% url 'jobapp:apply-job' job.id %}" class="btn btn-success">Apply Now</a>
+                    {% endif %}
+                  {% elif user.is_authenticated %}
+                    <button class="btn btn-success" disabled>Login as Employee</button>
+                  {% else %}
+                    <a href="{% url 'account:employee-registration' %}" class="btn btn-success">Register & Apply</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+          <!-- Pagination -->
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+              {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+              {% endif %}
+
+              {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                  <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                  </li>
+                {% else %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                  </li>
+                {% endif %}
+              {% endfor %}
+
+              {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        {% else %}
+          <div class="alert alert-info">No jobs available at the moment.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock content %}

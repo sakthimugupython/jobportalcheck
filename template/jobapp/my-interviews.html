@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="text-white font-weight-bold">My Interviews</h1>
+                <div class="custom-breadcrumbs">
+                    <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+                    <a href="{% url 'jobapp:dashboard' %}">Dashboard</a> <span class="mx-2 slash">/</span>
+                    <span class="text-white"><strong>My Interviews</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="site-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                {% include 'messages.html' %}
+                
+                {% if interviews %}
+                    {% for interview in interviews %}
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4 class="card-title">{{ interview.applicant.job.title }}</h4>
+                                    <p class="text-muted"><strong>{{ interview.applicant.job.company_name }}</strong></p>
+                                    <p><strong>Interview Date & Time:</strong> {{ interview.scheduled_date | date:'M d, Y H:i' }}</p>
+                                    {% if interview.notes %}
+                                    <div class="alert alert-info mt-3">
+                                        <strong>Interview Instructions:</strong>
+                                        <p>{{ interview.notes }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4 text-right">
+                                    {% if interview.meeting_link %}
+                                        <a href="{{ interview.meeting_link }}" target="_blank" class="btn btn-success btn-lg">Join Meeting</a>
+                                    {% else %}
+                                        <button class="btn btn-success btn-lg" disabled>No Meeting Link</button>
+                                    {% endif %}
+                                    <p class="mt-3"><span class="badge badge-success">Scheduled</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-info">
+                        <p>You don't have any scheduled interviews yet. Keep applying to jobs!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
