@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="text-white font-weight-bold">Apply for Job</h1>
+                <div class="custom-breadcrumbs">
+                    <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+                    <a href="{% url 'jobapp:single-job' job.id %}">{{ job.title }}</a> <span class="mx-2 slash">/</span>
+                    <span class="text-white"><strong>Apply</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="site-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card p-5">
+                    <h3 class="mb-4">Apply for Position</h3>
+                    
+                    <div class="job-info mb-4 p-3 bg-light rounded">
+                        <h5>{{ job.title }}</h5>
+                        <p class="mb-1"><strong>Company:</strong> {{ job.company_name }}</p>
+                        <p class="mb-1"><strong>Location:</strong> {{ job.location }}</p>
+                        <p class="mb-0"><strong>Job Type:</strong> 
+                            {% if job.job_type == '1' %}
+                                Full Time
+                            {% elif job.job_type == '2' %}
+                                Part Time
+                            {% else %}
+                                Internship
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.resume.id_for_label }}" class="font-weight-bold">Upload Your Resume <span class="text-danger">*</span></label>
+                            <div class="custom-file">
+                                {{ form.resume }}
+                                <label class="custom-file-label" for="{{ form.resume.id_for_label }}">Choose file...</label>
+                            </div>
+                            <small class="form-text text-muted">Accepted formats: PDF, DOC, DOCX (Max 5MB)</small>
+                            {% if form.resume.errors %}
+                                <div class="alert alert-danger mt-2">{{ form.resume.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="alert alert-info" role="alert">
+                            <strong>Note:</strong> Your resume will be reviewed by the employer. Make sure it's up-to-date and highlights your relevant skills and experience.
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Submit Application</button>
+                            <a href="{% url 'jobapp:single-job' job.id %}" class="btn btn-secondary btn-lg btn-block mt-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .custom-file-label::after {
+        content: "Browse";
+    }
+    
+    .job-info {
+        border-left: 4px solid #007bff;
+    }
+</style>
+
+{% endblock %}

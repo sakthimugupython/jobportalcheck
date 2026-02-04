@@ -94,10 +94,28 @@ class JobApplyForm(forms.ModelForm):
         fields = ['resume']
         widgets = {
             'resume': forms.FileInput(attrs={
-                'class': 'form-control',
-                'accept': '.pdf,.doc,.docx'
+                'class': 'custom-file-input',
+                'accept': '.pdf,.doc,.docx',
+                'required': True
             })
         }
+    
+    def clean_resume(self):
+        resume = self.cleaned_data.get('resume')
+        if not resume:
+            raise forms.ValidationError("Resume is required to apply for this job.")
+        
+        # Check file size (5MB max)
+        if resume.size > 5 * 1024 * 1024:
+            raise forms.ValidationError("Resume file size must not exceed 5MB.")
+        
+        # Check file extension
+        allowed_extensions = ['pdf', 'doc', 'docx']
+        file_ext = resume.name.split('.')[-1].lower()
+        if file_ext not in allowed_extensions:
+            raise forms.ValidationError("Only PDF, DOC, and DOCX files are allowed.")
+        
+        return resume
 
 class JobBookmarkForm(forms.ModelForm):
     class Meta:

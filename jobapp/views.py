@@ -199,33 +199,26 @@ def apply_job_view(request, id):
     job = get_object_or_404(Job, id=id)
     applicant = Applicant.objects.filter(user=user, job=job)
 
-    if not applicant:
-        if request.method == 'POST':
+    if applicant:
+        messages.error(request, 'You already applied for this job!')
+        return redirect(reverse("jobapp:single-job", kwargs={'id': id}))
 
-            if form.is_valid():
-                instance = form.save(commit=False)
-                instance.user = user
-                instance.job = job
-                instance.save()
+    if request.method == 'POST':
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = user
+            instance.job = job
+            instance.save()
 
-                messages.success(
-                    request, 'You have successfully applied for this job!')
-                return redirect(reverse("jobapp:single-job", kwargs={
-                    'id': id
-                }))
-
-        else:
-            return redirect(reverse("jobapp:single-job", kwargs={
-                'id': id
-            }))
-
-    else:
-
-        messages.error(request, 'You already applied for the Job!')
-
-        return redirect(reverse("jobapp:single-job", kwargs={
-            'id': id
-        }))
+            messages.success(request, 'You have successfully applied for this job!')
+            return redirect(reverse("jobapp:single-job", kwargs={'id': id}))
+    
+    context = {
+        'form': form,
+        'job': job
+    }
+    
+    return render(request, 'jobapp/apply-job.html', context)
 
 
 @login_required(login_url=reverse_lazy('account:login'))
@@ -415,7 +408,7 @@ def update_applicant_status_view(request, applicant_id):
         if form.is_valid():
             form.save()
             messages.success(request, f'Applicant status updated to {applicant.get_status_display()}!')
-            return redirect(reverse('jobapp:all-applicants', kwargs={'id': applicant.job.id}))
+            return redirect(reverse('jobapp:applicants', kwargs={'id': applicant.job.id}))
     
     context = {
         'form': form,
