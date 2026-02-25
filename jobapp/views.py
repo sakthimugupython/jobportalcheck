@@ -395,6 +395,8 @@ def update_applicant_status_view(request, applicant_id):
     """
     Update applicant status (pending, shortlisted, rejected)
     """
+    from jobapp.emails import send_shortlisted_email, send_rejected_email
+    
     applicant = get_object_or_404(Applicant, id=applicant_id)
     
     # Verify employer owns the job
@@ -406,8 +408,20 @@ def update_applicant_status_view(request, applicant_id):
     
     if request.method == 'POST':
         if form.is_valid():
+            old_status = applicant.status
             form.save()
-            messages.success(request, f'Applicant status updated to {applicant.get_status_display()}!')
+            new_status = applicant.status
+            
+            # Send email based on status change
+            if new_status == 'shortlisted' and old_status != 'shortlisted':
+                send_shortlisted_email(applicant)
+                messages.success(request, f'Applicant status updated to Shortlisted! Email sent to candidate.')
+            elif new_status == 'rejected' and old_status != 'rejected':
+                send_rejected_email(applicant)
+                messages.success(request, f'Applicant status updated to Rejected! Email sent to candidate.')
+            else:
+                messages.success(request, f'Applicant status updated to {applicant.get_status_display()}!')
+            
             return redirect(reverse('jobapp:applicants', kwargs={'id': applicant.job.id}))
     
     context = {
@@ -424,6 +438,8 @@ def schedule_interview_view(request, applicant_id):
     """
     Schedule an interview for a shortlisted applicant
     """
+    from jobapp.emails import send_interview_scheduled_email, send_interview_updated_email
+    
     applicant = get_object_or_404(Applicant, id=applicant_id)
     
     # Verify employer owns the job
@@ -438,8 +454,10 @@ def schedule_interview_view(request, applicant_id):
     
     try:
         interview = Interview.objects.get(applicant=applicant)
+        is_new = False
     except Interview.DoesNotExist:
         interview = None
+        is_new = True
     
     form = InterviewScheduleForm(request.POST or None, instance=interview)
     
@@ -448,7 +466,15 @@ def schedule_interview_view(request, applicant_id):
             interview = form.save(commit=False)
             interview.applicant = applicant
             interview.save()
-            messages.success(request, 'Interview scheduled successfully! Notification sent to candidate.')
+            
+            # Send email based on whether it's new or updated
+            if is_new:
+                send_interview_scheduled_email(interview)
+                messages.success(request, 'Interview scheduled successfully! Email sent to candidate.')
+            else:
+                send_interview_updated_email(interview)
+                messages.success(request, 'Interview details updated! Email sent to candidate.')
+            
             return redirect(reverse('jobapp:applicants', kwargs={'id': applicant.job.id}))
     
     context = {
@@ -475,3 +501,29 @@ def view_interview_view(request):
     }
     
     return render(request, 'jobapp/my-interviews.html', context)
+
+
+def about_view(request):
+    """
+    Display about page
+    """
+    context = {}
+    return render(request, 'jobapp/about.html', context)
+
+
+def contact_view(request):
+    """
+    Display contact page and handle contact form submissions
+    """
+    form = ContactForm(request.POST or None)
+    
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Thank you for your message! We will get back to you soon.')
+            return redirect('jobapp:contact')
+    
+    context = {
+        'form': form
+    }
+    return render(request, 'jobapp/contact.html', context)

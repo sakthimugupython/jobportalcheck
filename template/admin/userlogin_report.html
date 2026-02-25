@@ -1,0 +1,70 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}User Login Report{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <h1>User Login Report</h1>
+    
+    <div style="margin: 20px 0; padding: 15px; background-color: #f0f0f0; border-radius: 5px;">
+        <form method="get" style="display: flex; gap: 10px; align-items: center;">
+            <label for="filter">Filter by:</label>
+            <select name="filter" id="filter" style="padding: 8px; border: 1px solid #ccc; border-radius: 3px;">
+                <option value="all" {% if filter_type == 'all' %}selected{% endif %}>All Time</option>
+                <option value="today" {% if filter_type == 'today' %}selected{% endif %}>Today</option>
+                <option value="week" {% if filter_type == 'week' %}selected{% endif %}>Last 7 Days</option>
+                <option value="month" {% if filter_type == 'month' %}selected{% endif %}>Last 30 Days</option>
+            </select>
+            <button type="submit" class="button">Filter</button>
+            <a href="{% url 'admin:userlogin_download' %}?filter={{ filter_type }}" class="button" style="background-color: #417690; margin-left: 10px;">
+                📥 Download PDF
+            </a>
+        </form>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <h2>Login Records ({{ logins|length }} total)</h2>
+        
+        {% if logins %}
+        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+            <thead>
+                <tr style="background-color: #417690; color: white;">
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Email</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Login Time</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">IP Address</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for login in logins %}
+                <tr style="background-color: {% cycle 'white' '#f9f9f9' %}; border-bottom: 1px solid #ddd;">
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ login.user.email }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ login.login_time|date:"Y-m-d H:i:s" }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ login.ip_address|default:"N/A" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color: #666; margin-top: 20px;">No login records found for the selected period.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .button {
+        padding: 8px 15px;
+        background-color: #417690;
+        color: white;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .button:hover {
+        background-color: #205067;
+    }
+</style>
+{% endblock %}

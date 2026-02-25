@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="section-hero overlay inner-page bg-image" style="background-image: url('{% static 'images/hero_1.jpg' %}');" id="home-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7">
+                <h1 class="text-white font-weight-bold">About DJobPortal</h1>
+                <div class="custom-breadcrumbs">
+                    <a href="{% url 'jobapp:home' %}">Home</a> <span class="mx-2 slash">/</span>
+                    <span class="text-white"><strong>About Us</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="site-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="section-title mb-4">Welcome to DJobPortal</h2>
+                <p class="lead mb-4">
+                    DJobPortal is a modern, user-friendly job portal platform designed to connect talented job seekers with top employers. 
+                    Our mission is to simplify the hiring process and help individuals find their dream jobs while enabling companies to discover 
+                    the perfect candidates for their teams.
+                </p>
+            </div>
+        </div>
+
+        <!-- MISSION & VISION -->
+        <div class="row mb-5">
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fa fa-bullseye fa-3x text-primary"></i>
+                        </div>
+                        <h4 class="card-title">Our Mission</h4>
+                        <p class="card-text">
+                            To revolutionize the job search and recruitment process by providing a seamless, transparent, and efficient platform 
+                            where job seekers and employers can connect, collaborate, and grow together.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <i class="fa fa-eye fa-3x text-success"></i>
+                        </div>
+                        <h4 class="card-title">Our Vision</h4>
+                        <p class="card-text">
+                            To become the leading job portal platform globally, empowering millions of professionals to achieve their career goals 
+                            and helping organizations build exceptional teams.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KEY FEATURES -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="section-title mb-4">Why Choose DJobPortal?</h3>
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <div class="d-flex">
+                            <div class="mr-3">
+                                <i class="fa fa-check-circle fa-2x text-success"></i>
+                            </div>
+                            <div>
+                                <h5>Easy Job Search</h5>
+                                <p class="text-muted">Browse thousands of job listings with advanced filtering options tailored to your skills and preferences.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="d-flex">
+                            <div class="mr-3">
+                                <i class="fa fa-check-circle fa-2x text-success"></i>
+                            </div>
+                            <div>
+                                <h5>Resume Management</h5>
+                                <p class="text-muted">Upload and manage your resume securely. Employers can easily review your qualifications.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="d-flex">
+                            <div class="mr-3">
+                                <i class="fa fa-check-circle fa-2x text-success"></i>
+                            </div>
+                            <div>
+                                <h5>Application Tracking</h5>
+                                <p class="text-muted">Track your applications in real-time and receive updates on your application status.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="d-flex">
+                            <div class="mr-3">
+                                <i class="fa fa-check-circle fa-2x text-success"></i>
+                            </div>
+                            <div>
+                                <h5>Interview Scheduling</h5>
+                                <p class="text-muted">Schedule interviews directly through our platform with integrated meeting links.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="d-flex">
+                            <div class="mr-3">
+                                <i class="fa fa-check-circle fa-2x text-success"></i>
+                            </div>
+                            <div>
+                                <h5>Employer Tools</h5>
+                                <p class="text-muted">Post jobs, manage applicants, and streamline your hiring process with our comprehensive tools.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="d-flex">
+                            <div class="mr-3">
+                                <i class="fa fa-check-circle fa-2x text-success"></i>
+                            </div>
+                            <div>
+                                <h5>Secure & Reliable</h5>
+                                <p class="text-muted">Your data is protected with industry-standard security measures and encryption.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATISTICS -->
+        <div class="row mb-5 bg-light p-5 rounded">
+            <div class="col-md-3 text-center mb-4">
+                <h3 class="text-primary font-weight-bold">1000+</h3>
+                <p class="text-muted">Active Job Listings</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <h3 class="text-success font-weight-bold">5000+</h3>
+                <p class="text-muted">Registered Candidates</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <h3 class="text-info font-weight-bold">500+</h3>
+                <p class="text-muted">Employer Partners</p>
+            </div>
+            <div class="col-md-3 text-center mb-4">
+                <h3 class="text-warning font-weight-bold">2000+</h3>
+                <p class="text-muted">Successful Placements</p>
+            </div>
+        </div>
+
+        <!-- HOW IT WORKS -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h3 class="section-title mb-4">How It Works</h3>
+                <div class="row">
+                    <div class="col-md-4 text-center mb-4">
+                        <div class="mb-3">
+                            <div class="badge badge-primary p-3" style="font-size: 1.5rem;">1</div>
+                        </div>
+                        <h5>Create Account</h5>
+                        <p class="text-muted">Sign up as a job seeker or employer and complete your profile.</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-4">
+                        <div class="mb-3">
+                            <div class="badge badge-success p-3" style="font-size: 1.5rem;">2</div>
+                        </div>
+                        <h5>Search & Apply</h5>
+                        <p class="text-muted">Browse job listings and submit your applications with your resume.</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-4">
+                        <div class="mb-3">
+                            <div class="badge badge-info p-3" style="font-size: 1.5rem;">3</div>
+                        </div>
+                        <h5>Get Hired</h5>
+                        <p class="text-muted">Connect with employers, attend interviews, and land your dream job.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT CTA -->
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="card bg-primary text-white p-5">
+                    <h4 class="mb-3">Ready to Get Started?</h4>
+                    <p class="mb-4">Join thousands of job seekers and employers on DJobPortal today.</p>
+                    <div>
+                        <a href="{% url 'account:employee-registration' %}" class="btn btn-light mr-2">Register as Job Seeker</a>
+                        <a href="{% url 'account:employer-registration' %}" class="btn btn-light">Register as Employer</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
