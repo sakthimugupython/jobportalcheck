@@ -1,11 +1,11 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 
-{% block title %}User Login Report{% endblock %}
+{% block title %}User Visit Report{% endblock %}
 
 {% block content %}
 <div id="content-main" style="background-color: white; padding: 20px; border-radius: 5px;">
-    <h1 style="color: #333; margin-bottom: 20px;">User Login Report</h1>
+    <h1 style="color: #333; margin-bottom: 20px;">User Visit Report</h1>
     
     <div style="margin: 20px 0; padding: 15px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 5px;">
         <form method="get" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
@@ -17,36 +17,34 @@
                 <option value="month" {% if filter_type == 'month' %}selected{% endif %}>Last 30 Days</option>
             </select>
             <button type="submit" class="button">Filter</button>
-            <a href="{% url 'admin:userlogin_download' %}?filter={{ filter_type }}" class="button" style="background-color: #417690; margin-left: 10px;">
+            <a href="{% url 'admin:uservisit_download' %}?filter={{ filter_type }}" class="button" style="background-color: #417690; margin-left: 10px;">
                 📥 Download PDF
             </a>
         </form>
     </div>
 
     <div style="margin-top: 20px;">
-        <h2 style="color: #333; margin-bottom: 15px;">Login Records ({{ logins|length }} total)</h2>
+        <h2 style="color: #333; margin-bottom: 15px;">Visit Records ({{ visits|length }} total)</h2>
         
-        {% if logins %}
+        {% if visits %}
         <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background-color: white;">
             <thead>
                 <tr style="background-color: #417690; color: white;">
                     <th style="padding: 12px; text-align: left; border: 1px solid #ddd; color: white; font-weight: bold;">Email</th>
-                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; color: white; font-weight: bold;">Login Time</th>
-                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; color: white; font-weight: bold;">IP Address</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #ddd; color: white; font-weight: bold;">Visit Date & Time</th>
                 </tr>
             </thead>
             <tbody>
-                {% for login in logins %}
+                {% for visit in visits %}
                 <tr style="background-color: {% cycle '#ffffff' '#f9f9f9' %}; border-bottom: 1px solid #ddd;">
-                    <td style="padding: 12px; border: 1px solid #ddd; color: #333;">{{ login.user.email }}</td>
-                    <td style="padding: 12px; border: 1px solid #ddd; color: #333;">{{ login.login_time|date:"Y-m-d H:i:s" }}</td>
-                    <td style="padding: 12px; border: 1px solid #ddd; color: #333;">{{ login.ip_address|default:"N/A" }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd; color: #333;">{{ visit.user.email }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd; color: #333;">{{ visit.timestamp|date:"Y-m-d H:i:s" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% else %}
-        <p style="color: #666; margin-top: 20px; background-color: #f9f9f9; padding: 15px; border-radius: 3px;">No login records found for the selected period.</p>
+        <p style="color: #666; margin-top: 20px; background-color: #f9f9f9; padding: 15px; border-radius: 3px;">No visit records found for the selected period.</p>
         {% endif %}
     </div>
 </div>

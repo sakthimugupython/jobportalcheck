@@ -39,3 +39,5 @@ class ContactAdmin(admin.ModelAdmin):
 admin.site.register(Contact, ContactAdmin)
 
 
+
+# User visit admin is registered in user_visit_admin.py
